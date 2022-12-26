@@ -17,6 +17,13 @@ export class App extends Component {
   };
 
   addNewContact = (name, number) => {
+    if (
+      this.state.contacts.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      return alert(`${name} is already in contacts`);
+    }
     const newContact = {
       id: shortid.generate(),
       name,
@@ -26,10 +33,6 @@ export class App extends Component {
     this.setState(({ contacts }) => ({
       contacts: [newContact, ...contacts],
     }));
-
-    if (this.state.contacts.some(contact => contact.name === name)) {
-      return alert(`${name} is already in contacts`);
-    }
   };
 
   deleteContact = contactId => {
@@ -39,7 +42,6 @@ export class App extends Component {
   };
 
   handleInputChange = event => {
-    console.log(event.currentTarget.value);
     this.setState({ filter: event.currentTarget.value });
   };
 
@@ -55,10 +57,11 @@ export class App extends Component {
     const filterName = this.getNormaliseContacts();
 
     return (
-      <div >
+      <div>
         <h1 className={css.title}> Phonebook</h1>
         <ContactForm onSubmit={this.addNewContact} />
         <h2 className={css.title}>Contacts</h2>
+
         <Filter value={filter} onChange={this.handleInputChange} />
         <ContactList
           contacts={filterName}
